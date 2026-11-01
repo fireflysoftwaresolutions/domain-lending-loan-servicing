@@ -36,21 +36,21 @@ import java.util.UUID;
 /**
  * Live ledger adapter. Posts the cash movement through core-banking-ledger-sdk.
  */
-@Component
+@Component("sdkLedgerAdapter")
 @ConditionalOnProperty(name = "firefly.lending.ledger.adapter", havingValue = "core")
-public class SdkLedgerAdapter implements LedgerPort {
+public class SdkLedgerAdapterImpl implements LedgerPort {
 
     private final TransactionsApi transactions;
     private final TransactionLegsApi legs;
 
     @Autowired
-    public SdkLedgerAdapter(@Value("${firefly.lending.ledger.core-base-url:http://localhost:8080}") String baseUrl) {
+    public SdkLedgerAdapterImpl(@Value("${firefly.lending.ledger.core-base-url:http://localhost:8080}") String baseUrl) {
         ApiClient client = new ApiClient();
         client.setBasePath(strip(baseUrl));
         this(new TransactionsApi(client), new TransactionLegsApi(client));
     }
 
-    SdkLedgerAdapter(TransactionsApi transactions, TransactionLegsApi legs) {
+    SdkLedgerAdapterImpl(TransactionsApi transactions, TransactionLegsApi legs) {
         this.transactions = transactions;
         this.legs = legs;
     }
@@ -67,7 +67,7 @@ public class SdkLedgerAdapter implements LedgerPort {
                         && existing.getTransactionId() != null)
                 .map(TransactionDTO::getTransactionId)
                 .switchIfEmpty(Mono.defer(() -> create(movement)))
-                .onErrorResume(SdkLedgerAdapter::missing, error -> create(movement));
+                .onErrorResume(SdkLedgerAdapterImpl::missing, error -> create(movement));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class SdkLedgerAdapter implements LedgerPort {
         }
         return transactions.updateTransactionStatus(postingId, "REVERSED", "loan-repayment-reverse", postingId.toString())
                 .then()
-                .onErrorResume(SdkLedgerAdapter::missing, error -> Mono.empty());
+                .onErrorResume(SdkLedgerAdapterImpl::missing, error -> Mono.empty());
     }
 
     private Mono<UUID> create(CashMovement movement) {

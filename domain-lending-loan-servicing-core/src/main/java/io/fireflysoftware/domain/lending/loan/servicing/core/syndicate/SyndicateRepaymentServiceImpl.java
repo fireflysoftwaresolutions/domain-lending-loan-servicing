@@ -31,13 +31,13 @@ import java.util.UUID;
  * Allocates a syndicated repayment through the servicing core SDK, then submits the money
  * through {@link PaymentTccPort}. Compensation cancels the payment and deletes the allocation.
  */
-@Service
-public class SyndicateRepaymentService {
+@Service("syndicateRepaymentService")
+public class SyndicateRepaymentServiceImpl {
 
     private final SyndicatedFacilityApi facilities;
     private final PaymentTccPort payments;
 
-    public SyndicateRepaymentService(SyndicatedFacilityApi facilities, PaymentTccPort payments) {
+    public SyndicateRepaymentServiceImpl(SyndicatedFacilityApi facilities, PaymentTccPort payments) {
         this.facilities = facilities;
         this.payments = payments;
     }

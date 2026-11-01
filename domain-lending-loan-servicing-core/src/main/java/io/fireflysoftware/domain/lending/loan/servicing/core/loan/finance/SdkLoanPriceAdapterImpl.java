@@ -33,20 +33,20 @@ import java.util.UUID;
  * then prices from the loan product brackets. It does not call a domain service.
  * core-common-pricing-mgmt stays empty and is not used.
  */
-@Component
+@Component("sdkLoanPriceAdapter")
 @ConditionalOnProperty(name = "firefly.lending.price.adapter", havingValue = "core")
-public class SdkLoanPriceAdapter implements LoanPricePort {
+public class SdkLoanPriceAdapterImpl implements LoanPricePort {
 
     private final ProductApi products;
 
     @Autowired
-    public SdkLoanPriceAdapter(@Value("${firefly.lending.price.product-base-url:http://localhost:8080}") String baseUrl) {
+    public SdkLoanPriceAdapterImpl(@Value("${firefly.lending.price.product-base-url:http://localhost:8080}") String baseUrl) {
         ApiClient client = new ApiClient();
         client.setBasePath(strip(baseUrl));
         this(new ProductApi(client));
     }
 
-    SdkLoanPriceAdapter(ProductApi products) {
+    SdkLoanPriceAdapterImpl(ProductApi products) {
         this.products = products;
     }
 

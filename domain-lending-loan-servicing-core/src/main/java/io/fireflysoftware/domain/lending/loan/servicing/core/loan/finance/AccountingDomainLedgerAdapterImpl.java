@@ -41,9 +41,9 @@ import java.util.UUID;
  * Live general-ledger adapter. Posts interest through core-common-accounting-gl-sdk.
  * It does not call the accounting domain.
  */
-@Component
+@Component("accountingDomainLedgerAdapter")
 @ConditionalOnProperty(name = "firefly.lending.accounting.adapter", havingValue = "core")
-public class AccountingDomainLedgerAdapter implements GeneralLedgerPort {
+public class AccountingDomainLedgerAdapterImpl implements GeneralLedgerPort {
 
     private static final UUID DEFAULT_RECEIVABLE = UUID.fromString("00000000-0000-4000-8000-000000000011");
     private static final UUID DEFAULT_INCOME = UUID.fromString("00000000-0000-4000-8000-000000000012");
@@ -56,7 +56,7 @@ public class AccountingDomainLedgerAdapter implements GeneralLedgerPort {
     private final UUID incomeAccountId;
 
     @Autowired
-    public AccountingDomainLedgerAdapter(
+    public AccountingDomainLedgerAdapterImpl(
             @Value("${firefly.lending.accounting.gl-base-url:http://localhost:8080}") String baseUrl,
             @Value("${firefly.lending.accounting.interest-receivable-account:00000000-0000-4000-8000-000000000011}") UUID receivableAccountId,
             @Value("${firefly.lending.accounting.interest-income-account:00000000-0000-4000-8000-000000000012}") UUID incomeAccountId) {

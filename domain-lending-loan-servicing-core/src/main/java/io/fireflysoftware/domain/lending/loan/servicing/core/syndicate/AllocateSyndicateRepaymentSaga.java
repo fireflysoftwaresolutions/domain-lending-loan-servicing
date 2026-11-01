@@ -31,9 +31,9 @@ import reactor.core.publisher.Mono;
 @Service
 public class AllocateSyndicateRepaymentSaga {
 
-    private final SyndicateRepaymentService repayments;
+    private final SyndicateRepaymentServiceImpl repayments;
 
-    public AllocateSyndicateRepaymentSaga(SyndicateRepaymentService repayments) {
+    public AllocateSyndicateRepaymentSaga(SyndicateRepaymentServiceImpl repayments) {
         this.repayments = repayments;
     }
 

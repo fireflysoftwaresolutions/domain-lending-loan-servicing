@@ -45,8 +45,8 @@ import java.util.Set;
  * Accrues interest for open loans and posts one general-ledger journal per business date.
  * A second run for that date does not accrue again and does not post again.
  */
-@Service
-public class LoanEndOfDayService {
+@Service("loanEndOfDayService")
+public class LoanEndOfDayServiceImpl {
 
     private static final Set<LoanServicingCaseDTO.ServicingStatusEnum> OPEN = EnumSet.of(
             LoanServicingCaseDTO.ServicingStatusEnum.ACTIVE,
@@ -64,7 +64,7 @@ public class LoanEndOfDayService {
     private final LoanPricePort prices;
     private final GeneralLedgerPort ledger;
 
-    public LoanEndOfDayService(
+    public LoanEndOfDayServiceImpl(
             LoanServicingCaseApi cases,
             LoanAccrualApi accruals,
             LoanRepaymentScheduleApi schedules,

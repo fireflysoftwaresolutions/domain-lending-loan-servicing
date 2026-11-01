@@ -58,28 +58,28 @@ class LendingFinancePathTest {
     @Test
     void sandboxAdaptersAreTheDefaultAndDoNotOpenASocket() {
         new ApplicationContextRunner()
-                .withUserConfiguration(SandboxLoanPriceAdapter.class, SdkLoanPriceAdapter.class)
-                .run(context -> assertThat(context.getBean(LoanPricePort.class)).isInstanceOf(SandboxLoanPriceAdapter.class));
+                .withUserConfiguration(SandboxLoanPriceAdapterImpl.class, SdkLoanPriceAdapterImpl.class)
+                .run(context -> assertThat(context.getBean(LoanPricePort.class)).isInstanceOf(SandboxLoanPriceAdapterImpl.class));
         new ApplicationContextRunner()
-                .withUserConfiguration(SandboxLedgerAdapter.class, SdkLedgerAdapter.class)
+                .withUserConfiguration(SandboxLedgerAdapterImpl.class, SdkLedgerAdapterImpl.class)
                 .run(context -> {
                     LedgerPort port = context.getBean(LedgerPort.class);
-                    assertThat(port).isInstanceOf(SandboxLedgerAdapter.class);
+                    assertThat(port).isInstanceOf(SandboxLedgerAdapterImpl.class);
                     UUID posting = port.post(new CashMovement(
                             new BigDecimal("10.00"), "USD", "ref-1",
                             UUID.randomUUID(), UUID.randomUUID())).block();
                     assertThat(posting).isNotNull();
                 });
         new ApplicationContextRunner()
-                .withUserConfiguration(SandboxGeneralLedgerAdapter.class, AccountingDomainLedgerAdapter.class)
-                .run(context -> assertThat(context.getBean(GeneralLedgerPort.class)).isInstanceOf(SandboxGeneralLedgerAdapter.class));
+                .withUserConfiguration(SandboxGeneralLedgerAdapterImpl.class, AccountingDomainLedgerAdapterImpl.class)
+                .run(context -> assertThat(context.getBean(GeneralLedgerPort.class)).isInstanceOf(SandboxGeneralLedgerAdapterImpl.class));
     }
 
     @Test
     void priceComesFromTheProductInterestConfiguration() {
-        LoanPrice personal = new SandboxLoanPriceAdapter()
+        LoanPrice personal = new SandboxLoanPriceAdapterImpl()
                 .price(new BigDecimal("10000.00"), 12, ProductInterestCatalog.PERSONAL_LOAN).block();
-        LoanPrice leasing = new SandboxLoanPriceAdapter()
+        LoanPrice leasing = new SandboxLoanPriceAdapterImpl()
                 .price(new BigDecimal("30000.00"), 24, ProductInterestCatalog.LEASING).block();
         assertThat(personal.annualRatePercent()).isEqualByComparingTo("7.99");
         assertThat(personal.currency()).isEqualTo("EUR");
@@ -103,7 +103,7 @@ class LendingFinancePathTest {
         row.setScheduleStatus(LoanRepaymentScheduleDTO.ScheduleStatusEnum.CURRENT);
         LoanRepaymentScheduleApi schedules = mock(LoanRepaymentScheduleApi.class);
         when(schedules.readCalendar(eq(caseId), eq(false), any())).thenReturn(Flux.just(row));
-        List<StoredInstallment> read = new SdkLoanCalendarAdapter(schedules).read(caseId).block();
+        List<StoredInstallment> read = new SdkLoanCalendarAdapterImpl(schedules).read(caseId).block();
         verify(schedules).readCalendar(eq(caseId), eq(false), any());
         assertThat(read).hasSize(1);
         assertThat(read.get(0).dueDate()).isEqualTo(LocalDate.of(2026, 2, 1));
@@ -131,7 +131,7 @@ class LendingFinancePathTest {
         });
         when(transactions.createTransaction(any(), any())).thenReturn(Mono.just(created));
         when(legs.createTransactionLeg(any(), any(), any())).thenReturn(Mono.just(new TransactionLegDTO()));
-        SdkLedgerAdapter adapter = new SdkLedgerAdapter(transactions, legs);
+        SdkLedgerAdapterImpl adapter = new SdkLedgerAdapterImpl(transactions, legs);
         CashMovement movement = new CashMovement(
                 new BigDecimal("25.00"), "EUR", "txn-1", UUID.randomUUID(), UUID.randomUUID());
         assertThat(adapter.post(movement).block()).isEqualTo(postingId);
@@ -182,7 +182,7 @@ class LendingFinancePathTest {
         when(schedules.findAllRepaymentSchedules(any(), any(), any())).thenReturn(Mono.just(empty));
 
         AtomicInteger posts = new AtomicInteger();
-        SandboxGeneralLedgerAdapter sandbox = new SandboxGeneralLedgerAdapter();
+        SandboxGeneralLedgerAdapterImpl sandbox = new SandboxGeneralLedgerAdapterImpl();
         GeneralLedgerPort ledger = new GeneralLedgerPort() {
             @Override
             public Mono<InterestPosting> postInterest(LocalDate businessDate, BigDecimal amount, String currency) {
@@ -196,8 +196,8 @@ class LendingFinancePathTest {
             }
         };
 
-        LoanEndOfDayService service = new LoanEndOfDayService(
-                cases, accruals, schedules, new SandboxLoanPriceAdapter(), ledger);
+        LoanEndOfDayServiceImpl service = new LoanEndOfDayServiceImpl(
+                cases, accruals, schedules, new SandboxLoanPriceAdapterImpl(), ledger);
         LocalDate businessDate = LocalDate.of(2026, 10, 21);
         EndOfDayResult first = service.run(businessDate).block();
         EndOfDayResult second = service.run(businessDate).block();

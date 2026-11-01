@@ -30,9 +30,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Default general-ledger adapter. One journal per business date, and it does not open a socket.
  */
-@Component
+@Component("sandboxGeneralLedgerAdapter")
 @ConditionalOnProperty(name = "firefly.lending.accounting.adapter", havingValue = "sandbox", matchIfMissing = true)
-public class SandboxGeneralLedgerAdapter implements GeneralLedgerPort {
+public class SandboxGeneralLedgerAdapterImpl implements GeneralLedgerPort {
 
     private final ConcurrentHashMap<LocalDate, InterestPosting> journals = new ConcurrentHashMap<>();
 

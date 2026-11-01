@@ -27,9 +27,9 @@ import java.util.UUID;
 /**
  * Default price adapter. Reads the product interest configuration and does not open a socket.
  */
-@Component
+@Component("sandboxLoanPriceAdapter")
 @ConditionalOnProperty(name = "firefly.lending.price.adapter", havingValue = "sandbox", matchIfMissing = true)
-public class SandboxLoanPriceAdapter implements LoanPricePort {
+public class SandboxLoanPriceAdapterImpl implements LoanPricePort {
 
     @Override
     public Mono<LoanPrice> price(BigDecimal principal, int term, UUID productId) {

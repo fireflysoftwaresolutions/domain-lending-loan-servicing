@@ -28,9 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Default ledger adapter. Keeps the posting in memory and does not open a socket.
  */
-@Component
+@Component("sandboxLedgerAdapter")
 @ConditionalOnProperty(name = "firefly.lending.ledger.adapter", havingValue = "sandbox", matchIfMissing = true)
-public class SandboxLedgerAdapter implements LedgerPort {
+public class SandboxLedgerAdapterImpl implements LedgerPort {
 
     private final ConcurrentHashMap<String, UUID> posted = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, String> references = new ConcurrentHashMap<>();

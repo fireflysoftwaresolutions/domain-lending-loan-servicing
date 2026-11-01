@@ -35,19 +35,19 @@ import java.util.UUID;
  * Live calendar adapter. Stores and reads the amortization calendar through
  * {@link LoanRepaymentScheduleApi}.
  */
-@Component
-public class SdkLoanCalendarAdapter implements LoanCalendarPort {
+@Component("sdkLoanCalendarAdapter")
+public class SdkLoanCalendarAdapterImpl implements LoanCalendarPort {
 
     private final LoanRepaymentScheduleApi schedules;
 
     @Autowired
-    public SdkLoanCalendarAdapter(LoanServicingProperties properties) {
+    public SdkLoanCalendarAdapterImpl(LoanServicingProperties properties) {
         ApiClient client = new ApiClient();
         client.setBasePath(strip(properties.getBasePath()));
         this(new LoanRepaymentScheduleApi(client));
     }
 
-    SdkLoanCalendarAdapter(LoanRepaymentScheduleApi schedules) {
+    SdkLoanCalendarAdapterImpl(LoanRepaymentScheduleApi schedules) {
         this.schedules = schedules;
     }
 
@@ -55,20 +55,20 @@ public class SdkLoanCalendarAdapter implements LoanCalendarPort {
     public Mono<List<StoredInstallment>> store(UUID caseId, CalendarTerms terms) {
         return schedules.storeCalendar(caseId, request(terms), key())
                 .collectList()
-                .map(SdkLoanCalendarAdapter::rows);
+                .map(SdkLoanCalendarAdapterImpl::rows);
     }
 
     @Override
     public Mono<List<StoredInstallment>> read(UUID caseId) {
         return schedules.readCalendar(caseId, false, key())
                 .collectList()
-                .map(SdkLoanCalendarAdapter::rows);
+                .map(SdkLoanCalendarAdapterImpl::rows);
     }
 
     @Override
     public Mono<ScheduleRevision> replace(UUID caseId, CalendarTerms terms) {
         return schedules.replaceCalendar(caseId, request(terms), key())
-                .map(SdkLoanCalendarAdapter::revision);
+                .map(SdkLoanCalendarAdapterImpl::revision);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class SdkLoanCalendarAdapter implements LoanCalendarPort {
                 .replacementScheduleIds(revision.current().stream().map(StoredInstallment::id).toList());
         return schedules.restoreCalendar(revision.loanServicingCaseId(), body, key())
                 .collectList()
-                .map(SdkLoanCalendarAdapter::rows);
+                .map(SdkLoanCalendarAdapterImpl::rows);
     }
 
     private static ScheduleRevision revision(ScheduleRevisionDTO body) {
@@ -92,7 +92,7 @@ public class SdkLoanCalendarAdapter implements LoanCalendarPort {
         if (rows == null || rows.isEmpty()) {
             return List.of();
         }
-        return rows.stream().filter(row -> row != null).map(SdkLoanCalendarAdapter::toStored).toList();
+        return rows.stream().filter(row -> row != null).map(SdkLoanCalendarAdapterImpl::toStored).toList();
     }
 
     private static StoredInstallment toStored(LoanRepaymentScheduleDTO row) {

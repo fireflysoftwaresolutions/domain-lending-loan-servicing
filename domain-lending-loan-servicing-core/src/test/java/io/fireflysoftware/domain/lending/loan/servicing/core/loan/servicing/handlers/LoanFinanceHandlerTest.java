@@ -31,8 +31,8 @@ import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.LoanPr
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.LoanPricePort;
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.MemoryLoanCalendar;
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.ProductInterestCatalog;
-import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.SandboxLedgerAdapter;
-import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.SandboxLoanPriceAdapter;
+import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.SandboxLedgerAdapterImpl;
+import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.SandboxLoanPriceAdapterImpl;
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.ScheduleState;
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.StoredInstallment;
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.servicing.commands.AllocateRepaymentCommand;
@@ -146,9 +146,9 @@ class LoanFinanceHandlerTest {
             return Mono.just(saved);
         });
 
-        SandboxLedgerAdapter ledger = new SandboxLedgerAdapter();
+        SandboxLedgerAdapterImpl ledger = new SandboxLedgerAdapterImpl();
         AllocateRepaymentHandler handler = new AllocateRepaymentHandler(
-                records, balanceApi, schedules, cases, ledger, new SandboxLoanPriceAdapter());
+                records, balanceApi, schedules, cases, ledger, new SandboxLoanPriceAdapterImpl());
         LoanRepaymentRecordDTO payment = new LoanRepaymentRecordDTO();
         payment.setPaymentAmount(new BigDecimal("100.00"));
         payment.setPaymentDate(LocalDate.of(2026, 11, 1));
@@ -193,7 +193,7 @@ class LoanFinanceHandlerTest {
         List<UUID> original = calendar.read(caseId).block().stream().map(StoredInstallment::id).toList();
 
         ReplaceRemainingScheduleHandler handler = new ReplaceRemainingScheduleHandler(
-                cases, new SandboxLoanPriceAdapter(), calendar);
+                cases, new SandboxLoanPriceAdapterImpl(), calendar);
         loan.setLoanTerm(24);
         var revision = handler.doHandle(new ReplaceRemainingScheduleCommand(caseId)).block();
         List<StoredInstallment> current = calendar.read(caseId).block();

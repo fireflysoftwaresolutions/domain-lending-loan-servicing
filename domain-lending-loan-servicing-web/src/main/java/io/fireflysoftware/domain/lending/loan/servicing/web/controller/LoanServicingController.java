@@ -19,7 +19,7 @@ package io.fireflysoftware.domain.lending.loan.servicing.web.controller;
 
 import io.fireflysoftware.core.lending.servicing.sdk.model.LoanServicingCaseDTO;
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.EndOfDayResult;
-import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.LoanEndOfDayService;
+import io.fireflysoftware.domain.lending.loan.servicing.core.loan.finance.LoanEndOfDayServiceImpl;
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.servicing.commands.*;
 import io.fireflysoftware.domain.lending.loan.servicing.core.loan.servicing.services.LoanServicingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +42,7 @@ import java.util.UUID;
 public class LoanServicingController {
 
     private final LoanServicingService loanServicingService;
-    private final LoanEndOfDayService loanEndOfDayService;
+    private final LoanEndOfDayServiceImpl loanEndOfDayService;
 
     @Operation(summary = "Run end of day", description = "Accrue interest for open loans and post it to the general ledger.")
     @PostMapping("/end-of-day")

@@ -21,7 +21,7 @@ import io.fireflysoftware.domain.lending.loan.servicing.core.syndicate.AllocateS
 import io.fireflysoftware.domain.lending.loan.servicing.core.syndicate.AllocateSyndicateRepaymentSaga;
 import io.fireflysoftware.domain.lending.loan.servicing.core.syndicate.BorrowerFacilityView;
 import io.fireflysoftware.domain.lending.loan.servicing.core.syndicate.SyndicatePaymentReceipt;
-import io.fireflysoftware.domain.lending.loan.servicing.core.syndicate.SyndicateRepaymentService;
+import io.fireflysoftware.domain.lending.loan.servicing.core.syndicate.SyndicateRepaymentServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +45,10 @@ import java.util.UUID;
 @Tag(name = "SyndicatedFacility", description = "Borrower view of a syndicated facility and its repayment")
 public class SyndicatedFacilityController {
 
-    private final SyndicateRepaymentService repayments;
+    private final SyndicateRepaymentServiceImpl repayments;
     private final AllocateSyndicateRepaymentSaga saga;
 
-    public SyndicatedFacilityController(SyndicateRepaymentService repayments, AllocateSyndicateRepaymentSaga saga) {
+    public SyndicatedFacilityController(SyndicateRepaymentServiceImpl repayments, AllocateSyndicateRepaymentSaga saga) {
         this.repayments = repayments;
         this.saga = saga;
     }

@@ -47,8 +47,8 @@ class SyndicateRepaymentServiceTest {
         UUID caseId = UUID.randomUUID();
         UUID facilityId = UUID.randomUUID();
         UUID allocationId = UUID.randomUUID();
-        SandboxPaymentTccAdapter payments = new SandboxPaymentTccAdapter();
-        SyndicateRepaymentService service = new SyndicateRepaymentService(facilities, payments);
+        SandboxPaymentTccAdapterImpl payments = new SandboxPaymentTccAdapterImpl();
+        SyndicateRepaymentServiceImpl service = new SyndicateRepaymentServiceImpl(facilities, payments);
         FacilityAllocationDTO allocation = new FacilityAllocationDTO()
                 .allocationId(allocationId)
                 .facilityId(facilityId)
@@ -75,8 +75,8 @@ class SyndicateRepaymentServiceTest {
     void borrowerViewOmitsParticipants() {
         UUID loanId = UUID.randomUUID();
         UUID facilityId = UUID.randomUUID();
-        SandboxPaymentTccAdapter payments = new SandboxPaymentTccAdapter();
-        SyndicateRepaymentService service = new SyndicateRepaymentService(facilities, payments);
+        SandboxPaymentTccAdapterImpl payments = new SandboxPaymentTccAdapterImpl();
+        SyndicateRepaymentServiceImpl service = new SyndicateRepaymentServiceImpl(facilities, payments);
         SyndicatedFacilityDTO facility = new SyndicatedFacilityDTO()
                 .facilityId(facilityId)
                 .loanServicingCaseId(loanId)

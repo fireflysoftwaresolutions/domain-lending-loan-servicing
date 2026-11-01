@@ -29,9 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Deterministic try, confirm, and cancel. No network.
  */
-@Component
+@Component("sandboxPaymentTccAdapter")
 @ConditionalOnProperty(name = "firefly.lending.payments.adapter", havingValue = "sandbox", matchIfMissing = true)
-public class SandboxPaymentTccAdapter implements PaymentTccPort {
+public class SandboxPaymentTccAdapterImpl implements PaymentTccPort {
 
     private final ConcurrentHashMap<UUID, String> pending = new ConcurrentHashMap<>();
 
